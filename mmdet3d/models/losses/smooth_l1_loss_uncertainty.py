@@ -10,6 +10,17 @@ from mmdet.models.losses.utils import weighted_loss
 
 
 @weighted_loss
+def neg_log_pdf_loss(pred: Tensor, target: Tensor) -> Tensor:
+    """
+        -Log(PDF) loss
+    """
+
+    dist = torch.distributions.Normal(loc=pred, scale=target)
+    loss = torch.mean(-dist.log_prob(target))
+
+    return loss
+
+@weighted_loss
 def smooth_l1_loss(pred: Tensor, target: Tensor, beta: float = 1.0) -> Tensor:
     """Smooth L1 loss.
 
