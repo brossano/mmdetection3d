@@ -20,7 +20,7 @@ from .train_mixins import AnchorTrainMixin
 
 
 @MODELS.register_module()
-class Anchor3DHead(Base3DDenseHead, AnchorTrainMixin):
+class Anchor3DHeadUncertainty(Base3DDenseHead, AnchorTrainMixin):
     """Anchor-based head for SECOND/PointPillars/MVXNet/PartA2.
 
     Args:
