@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .anchor3d_head import Anchor3DHead
+from .anchor3d_head_uncertainty import Anchor3DHeadUncertainty
 from .anchor_free_mono3d_head import AnchorFreeMono3DHead
 from .base_3d_dense_head import Base3DDenseHead
 from .base_conv_bbox_head import BaseConvBboxHead
@@ -24,5 +25,5 @@ __all__ = [
     'SSD3DHead', 'BaseConvBboxHead', 'CenterHead', 'ShapeAwareHead',
     'BaseMono3DDenseHead', 'AnchorFreeMono3DHead', 'FCOSMono3DHead',
     'GroupFree3DHead', 'PointRPNHead', 'SMOKEMono3DHead', 'PGDHead',
-    'MonoFlexHead', 'Base3DDenseHead', 'FCAF3DHead', 'ImVoxelHead'
+    'MonoFlexHead', 'Base3DDenseHead', 'FCAF3DHead', 'ImVoxelHead', 'Anchor3DHeadUncertainty'
 ]
