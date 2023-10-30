@@ -70,12 +70,18 @@ class Anchor3DHead(Base3DDenseHead, AnchorTrainMixin):
                      type='mmdet.CrossEntropyLoss',
                      use_sigmoid=True,
                      loss_weight=1.0),
-                 loss_bbox: ConfigType = dict(
-                     type='mmdet.SmoothL1Loss',
-                     beta=1.0 / 9.0,
-                     loss_weight=2.0),
-                 loss_dir: ConfigType = dict(
-                     type='mmdet.CrossEntropyLoss', loss_weight=0.2),
+                loss_bbox: ConfigType = dict(
+                    type='mmdet.NegativeLogPDFLoss',
+                    loss_weight=2.0),
+                #  loss_bbox: ConfigType = dict(
+                #     type='mmdet.SmoothL1Loss',
+                #      beta=1.0 / 9.0,
+                #      loss_weight=2.0),
+                loss_dir: ConfigType = dict(
+                    type='mmdet.NegativeLogPDFLoss',
+                    loss_weight=0.2),
+                #  loss_dir: ConfigType = dict(
+                #      type='mmdet.CrossEntropyLoss', loss_weight=0.2),
                  train_cfg: OptConfigType = None,
                  test_cfg: OptConfigType = None,
                  init_cfg: OptConfigType = None) -> None:
