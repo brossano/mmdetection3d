@@ -151,10 +151,10 @@ class Anchor3DHeadUncertainty(Base3DDenseHead, AnchorTrainMixin):
 
     def _init_layers(self):
         """Initialize neural network layers of the head."""
-        self.cls_out_channels = (2 * self.num_anchors * self.num_classes) # DOUBLE OUTPUT CHANNELS
+        self.cls_out_channels = (self.num_anchors * self.num_classes) 
         self.conv_cls = nn.Conv2d(self.feat_channels, self.cls_out_channels, 1)
         self.conv_reg = nn.Conv2d(self.feat_channels,
-                                  self.num_anchors * self.box_code_size, 1)
+                                  2 * self.num_anchors * self.box_code_size, 1) # DOUBLE OUTPUT CHANNELS
         if self.use_direction_classifier:
             self.conv_dir_cls = nn.Conv2d(self.feat_channels,
                                           self.num_anchors * 2, 1)
