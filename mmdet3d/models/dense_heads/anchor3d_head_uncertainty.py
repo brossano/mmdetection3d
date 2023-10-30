@@ -1,4 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+# python tools/train.py configs/pointpillars/pointpillars_hv_secfpn_8xb6-160e_kitti-3d-3class.py --work-dir=work
+# THEORETICAL TRAIN COMMAND ^
 import warnings
 from typing import List, Tuple
 
