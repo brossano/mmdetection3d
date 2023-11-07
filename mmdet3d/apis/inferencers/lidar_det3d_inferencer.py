@@ -60,7 +60,7 @@ class LidarDet3DInferencer(Base3DInferencer):
         super(LidarDet3DInferencer, self).__init__(
             model=model,
             weights=weights,
-            device=device,
+            device='cpu',
             scope=scope,
             palette=palette)
 

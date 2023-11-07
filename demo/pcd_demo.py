@@ -72,18 +72,20 @@ def parse_args():
     return init_args, call_args
 
 
-def main():
+def main(bin_file):
     # TODO: Support inference of point cloud numpy file.
-    init_args, call_args = parse_args()
-
+    # init_args, call_args = parse_args()
+    init_args = {'model': 'pointpillars_hv_secfpn_8xb6-160e_kitti-3d-car.py', 'weights': 'hv_pointpillars_secfpn_6x8_160e_kitti-3d-car_20220331_134606-d42d15ed.pth', 'device': 'cuda:0'}
+    call_args = {'pred_score_thr': 0.3, 'out_dir': 'outputs', 'show': True, 'wait_time': -1, 'no_save_vis': False, 'no_save_pred': False, 'print_result': False, 'inputs': {'points': bin_file}}
     inferencer = LidarDet3DInferencer(**init_args)
-    inferencer(**call_args)
+    results = inferencer(**call_args)
 
     if call_args['out_dir'] != '' and not (call_args['no_save_vis']
                                            and call_args['no_save_pred']):
         print_log(
             f'results have been saved at {call_args["out_dir"]}',
             logger='current')
+    return results
 
 
 if __name__ == '__main__':
