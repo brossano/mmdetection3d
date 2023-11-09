@@ -4,6 +4,7 @@ from typing import Optional
 import torch
 import torch.nn as nn
 from torch import Tensor
+import np
 
 from mmdet3d.registry import MODELS
 from mmdet.models.losses.utils import weighted_loss
@@ -14,9 +15,15 @@ def neg_log_pdf_loss(pred: Tensor, target: Tensor) -> Tensor:
     """
         -Log(PDF) loss
     """
+    # EXPLICITLY DEFINED -log(PDF)
+    sigma = pred[:, 3]
+    const = 1/(np.sqrt(2*(np.pi))*sigma)
+    PDF = const * torch.exp(-((target - pred[:, 0])**2 / 2*sigma**2))
+    loss = -np.log(PDF)
 
-    dist = torch.distributions.Normal(loc=pred, scale=target)
-    loss = torch.mean(-dist.log_prob(target))
+    # pytorch distributions from the article, needs the fc input (mu & sigma)
+    # dist = torch.distributions.Normal(loc=pred, scale=target)
+    # loss = torch.mean(-dist.log_prob(target))
 
     return loss
 
