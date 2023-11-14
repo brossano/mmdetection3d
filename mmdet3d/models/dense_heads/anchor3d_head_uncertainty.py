@@ -1,4 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+# python tools/train.py configs/pointpillars/pointpillars_hv_secfpn_8xb6-160e_kitti-3d-3class.py --work-dir=work
+# THEORETICAL TRAIN COMMAND ^
 import warnings
 from typing import List, Tuple
 
@@ -20,7 +22,7 @@ from .train_mixins import AnchorTrainMixin
 
 
 @MODELS.register_module()
-class Anchor3DHead(Base3DDenseHead, AnchorTrainMixin):
+class Anchor3DHeadUncertainty(Base3DDenseHead, AnchorTrainMixin):
     """Anchor-based head for SECOND/PointPillars/MVXNet/PartA2.
 
     Args:
@@ -70,12 +72,18 @@ class Anchor3DHead(Base3DDenseHead, AnchorTrainMixin):
                      type='mmdet.CrossEntropyLoss',
                      use_sigmoid=True,
                      loss_weight=1.0),
-                 loss_bbox: ConfigType = dict(
-                     type='mmdet.SmoothL1Loss',
-                     beta=1.0 / 9.0,
-                     loss_weight=2.0),
-                 loss_dir: ConfigType = dict(
-                     type='mmdet.CrossEntropyLoss', loss_weight=0.2),
+                loss_bbox: ConfigType = dict(
+                    type='mmdet.NegativeLogPDFLoss',
+                    loss_weight=2.0),
+                #  loss_bbox: ConfigType = dict(
+                #     type='mmdet.SmoothL1Loss',
+                #      beta=1.0 / 9.0,
+                #      loss_weight=2.0),
+                loss_dir: ConfigType = dict(
+                    type='mmdet.NegativeLogPDFLoss',
+                    loss_weight=0.2),
+                #  loss_dir: ConfigType = dict(
+                #      type='mmdet.CrossEntropyLoss', loss_weight=0.2),
                  train_cfg: OptConfigType = None,
                  test_cfg: OptConfigType = None,
                  init_cfg: OptConfigType = None) -> None:
@@ -143,14 +151,14 @@ class Anchor3DHead(Base3DDenseHead, AnchorTrainMixin):
 
     def _init_layers(self):
         """Initialize neural network layers of the head."""
-        self.cls_out_channels = self.num_anchors * self.num_classes
+        self.cls_out_channels = (self.num_anchors * self.num_classes) 
         self.conv_cls = nn.Conv2d(self.feat_channels, self.cls_out_channels, 1)
         self.conv_reg = nn.Conv2d(self.feat_channels,
-                                  self.num_anchors * self.box_code_size, 1)
+                                  2 * self.num_anchors * self.box_code_size, 1) # DOUBLE OUTPUT CHANNELS
         if self.use_direction_classifier:
             self.conv_dir_cls = nn.Conv2d(self.feat_channels,
                                           self.num_anchors * 2, 1)
-
+    # EDIT HERE!
     def forward_single(self, x: Tensor) -> Tuple[Tensor, Tensor, Tensor]:
         """Forward function on a single-scale feature map.
 
