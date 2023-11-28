@@ -14,7 +14,7 @@ def parse_args():
     parser.add_argument('model', help='Config file')
     parser.add_argument('weights', help='Checkpoint file')
     parser.add_argument(
-        '--device', default='cuda:0', help='Device used for inference')
+        '--device', default='cpu', help='Device used for inference')
     parser.add_argument(
         '--pred-score-thr',
         type=float,
