@@ -57,7 +57,7 @@ model = dict(
             alpha=0.25,
             loss_weight=1.0),
         loss_bbox=dict(
-            type='mmdet3d.NegativeLogPDFLoss'), # NEW LOSS FUNCTION
+            type='mmdet3d.NegativeLogPDFLoss',loss_weight=2.0),
         loss_dir=dict(
             type='mmdet.CrossEntropyLoss', use_sigmoid=False,
             loss_weight=0.2)),

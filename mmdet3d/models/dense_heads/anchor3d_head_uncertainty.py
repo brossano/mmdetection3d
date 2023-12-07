@@ -285,7 +285,7 @@ class Anchor3DHeadUncertainty(Base3DDenseHead, AnchorTrainMixin):
 
         # regression loss
         bbox_pred = bbox_pred.permute(0, 2, 3,
-                                      1).reshape(-1, self.box_code_size)
+                                      1).reshape(-1, 2*self.box_code_size)
         bbox_targets = bbox_targets.reshape(-1, self.box_code_size)
         bbox_weights = bbox_weights.reshape(-1, self.box_code_size)
 

@@ -75,7 +75,9 @@ class DeltaXYZWLHRBBoxCoder(BaseBBoxCoder):
             xt, yt, zt, wt, lt, ht, rt, *cts = torch.split(deltas, 1, dim=-1)
         else:
             xa, ya, za, wa, la, ha, ra = torch.split(anchors, 1, dim=-1)
-            xt, yt, zt, wt, lt, ht, rt = torch.split(deltas, 1, dim=-1)
+            xt, yt, zt, wt, lt, ht, rt = torch.split(deltas, 1, dim=-1) # ORIG
+            # xt, yt, zt, wt, lt, ht, rt = torch.split(deltas, 1, dim=-1)[:, :7] # modified this, i believe it has shape of 14 with STDV
+            print("\ndeltas\n", deltas.shape)
 
         za = za + ha / 2
         diagonal = torch.sqrt(la**2 + wa**2)

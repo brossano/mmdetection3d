@@ -2,6 +2,9 @@ import os
 import numpy as np
 import struct
 import open3d
+import demo.pcd_demo as demo
+import pdb
+import pdb
 
 def read_bin_velodyne(path):
     pc_list=[]
@@ -15,6 +18,10 @@ def read_bin_velodyne(path):
 def main():
     path='demo/data/kitti/000008.bin'
     pcd=open3d.open3d.geometry.PointCloud()
+    # breakpoint()
+    # path='demo/data/kitti/000008.bin'
+    path = 'tests/data/kitti/training/velodyne/000000.bin'
+    pc_np =read_bin_velodyne(path)
 
     example=read_bin_velodyne(path)
     # From numpy to Open3D

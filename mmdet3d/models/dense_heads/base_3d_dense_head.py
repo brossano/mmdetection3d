@@ -322,7 +322,7 @@ class Base3DDenseHead(BaseModule, metaclass=ABCMeta):
             else:
                 scores = cls_score.softmax(-1)
             bbox_pred = bbox_pred.permute(1, 2,
-                                          0).reshape(-1, self.box_code_size)
+                                          0).reshape(-1, 2*self.box_code_size)
 
             nms_pre = cfg.get('nms_pre', -1)
             if nms_pre > 0 and scores.shape[0] > nms_pre:

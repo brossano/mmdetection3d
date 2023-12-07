@@ -4,7 +4,7 @@ from typing import Optional
 import torch
 import torch.nn as nn
 from torch import Tensor
-import np
+import numpy as np
 
 from mmdet3d.registry import MODELS
 from mmdet.models.losses.utils import weighted_loss
@@ -16,14 +16,44 @@ def neg_log_pdf_loss(pred: Tensor, target: Tensor) -> Tensor:
         -Log(PDF) loss
     """
     # EXPLICITLY DEFINED -log(PDF)
-    sigma = pred[:, 3]
-    const = 1/(np.sqrt(2*(np.pi))*sigma)
-    PDF = const * torch.exp(-((target - pred[:, 0])**2 / 2*sigma**2))
-    loss = -np.log(PDF)
+    # sigma = torch.abs(pred[:, 7:])
 
+    # COMPUTE ELU FOR SIGMA (prefferred method via towards data science article)
+    elu = torch.nn.ELU(alpha=1.0, inplace=False)
+    sigma = elu(pred[:, 7:]) + 1
+    # enforce sigma has no negative values or nan rows
+    sigma[sigma < 0] = 0.0
+    sigma = sigma[~torch.any(sigma.isnan(), dim=1)]
+    # get bbox pred and remove any nan rows
+    bbox = pred[:, :7]
+    bbox = bbox[~torch.any(bbox.isnan(), dim=1)]
+
+
+    # README: 
+    # explicit computation of PDF was not working, having errors when computing gradient.
+    # if torch.isnan(sigma).any():
+    #     print("SIGMA NANNED OUT!")
+
+    # const = 1/(np.sqrt(2*(np.pi))*sigma)
+
+    # if torch.isnan((pred)).any():
+    #     print("PRED NAN!!")
+
+    # PDF = const * torch.exp(-((target - bbox)**2 / 2*(sigma**2)))
+
+    # if torch.isnan(torch.isnan(PDF)).any():
+    #     print("PDF IS NAN")
+
+    # loss = -torch.log(PDF)
+
+    # if torch.isnan(torch.isnan(loss)).any():
+    #     print("LOSS IS NAN")
+    # # print(loss)
+
+    # CREATE NORMAL DISTROBUTION BASED ON bbox pred & sigma!
     # pytorch distributions from the article, needs the fc input (mu & sigma)
-    # dist = torch.distributions.Normal(loc=pred, scale=target)
-    # loss = torch.mean(-dist.log_prob(target))
+    dist = torch.distributions.Normal(loc=bbox, scale=sigma)
+    loss = torch.nanmean(-dist.log_prob(target)) # nan mean sums all non-nan values
 
     return loss
 

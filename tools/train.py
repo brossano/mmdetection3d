@@ -8,6 +8,7 @@ from mmengine.config import Config, DictAction
 from mmengine.logging import print_log
 from mmengine.registry import RUNNERS
 from mmengine.runner import Runner
+import torch
 
 from mmdet3d.utils import replace_ceph_backend
 
@@ -128,7 +129,8 @@ def main():
         runner = RUNNERS.build(cfg)
 
     # start training
-    runner.train()
+    with torch.autograd.set_detect_anomaly(True):
+        runner.train()
 
 
 if __name__ == '__main__':
